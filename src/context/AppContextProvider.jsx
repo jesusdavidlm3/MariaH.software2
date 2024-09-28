@@ -1,7 +1,7 @@
 import { appContext } from './appContext'
 import { useState } from 'react'
 
-const appContextProvider = ({children}) => {
+const AppContextProvider = ({children}) => {
 
     return(
         <appContext.Provider value={{
@@ -13,4 +13,4 @@ const appContextProvider = ({children}) => {
 
 }
 
-export default appContextProvider
+export default AppContextProvider
