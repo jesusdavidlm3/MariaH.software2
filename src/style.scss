@@ -1,0 +1,13 @@
+@mixin fullScreen{
+    margin: 0px;
+    width: 100vw;
+    height: 100vh;
+}
+
+.root{
+    @include fullScreen
+}
+
+.errorPage{
+    @include fullScreen
+}
