@@ -12,7 +12,7 @@ const Login = () => {
                 className="loginPage"
                 onFinish={onFinish}
             >
-                <h1>Bienvenido a "Nombre"</h1>
+                <h1>Bienvenido a Administrative Group</h1>
                 <h2>Iniciar sesion</h2>
                 <Form.Item
                     label='Email'

@@ -7,7 +7,7 @@ import './style.scss'
 import Root from './pages/Root'
 import ErrorPage from './pages/ErrorPage'
 import Login from './pages/Login'
-import page2 from './pages/page2'
+import Menu from './pages/Menu'
 import page3 from './pages/page3'
 
 
@@ -22,8 +22,8 @@ const router = createBrowserRouter([
         element: <Login/>
       },
       {
-        path: '/ch2',
-        element: <page2/>
+        path: '/menu',
+        element: <Menu/>
       },
       {
         path: '/ch3',
