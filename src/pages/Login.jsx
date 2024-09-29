@@ -8,13 +8,35 @@ const Login = () => {
 
     return(
         <>
-            <Form className="loginPage" onFinish={onFinish}>
-                <h1>Iniciar sesion</h1>
-                <Form.Item label='Email' name='Email'>
+            <Form
+                className="loginPage"
+                onFinish={onFinish}
+            >
+                <h1>Bienvenido a "Nombre"</h1>
+                <h2>Iniciar sesion</h2>
+                <Form.Item
+                    label='Email'
+                    name='Email'
+                    rules={[
+                        {
+                            required: true,
+                            message: 'Por favor ingrese un correo electronico valido',
+                        },
+                    ]}
+                >
                     <Input/>
                 </Form.Item>
 
-                <Form.Item label='Contraseña' name='Contraseña'>
+                <Form.Item
+                    label='Contraseña'
+                    name='Contraseña'
+                    rules={[
+                        {
+                            required: true,
+                            message: 'Por favor ingrese su contraseña',
+                        },
+                    ]}
+                >
                     <Input.Password/>
                 </Form.Item>
 
