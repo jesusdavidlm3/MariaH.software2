@@ -3,18 +3,22 @@ import cors from 'cors';
 import bodyParser from 'body-parser';
 import sqlite3 from 'sqlite3';
 import { createServer } from 'http';
-import { encrypt } from './src/functions/hash'
+// import { encrypt } from './src/functions/hash'
 
 const app = Express();
 const port = 3000;
 const db = new sqlite3.Database('db.db')
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: true}));
+// app.use(bodyParser.json());
+// app.use(bodyParser.urlencoded({extended: true}));
+app.use(Express.json()) // for parsing application/json
+app.use(Express.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
+
 app.use(cors());
 
 app.post('/api/login', (req, res) => {
     const { email, password } = req.body;
+    console.log(req.body)
     db.get('SELECT * FROM users WHERE email = ?', [email], (err, user) => {
         if(err){
             res.status(500).send('Error del servidor')

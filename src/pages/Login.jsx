@@ -1,17 +1,45 @@
 import { Button, Form, Input } from "antd"
+import { login } from "../client/client"
+import { encrypt } from '../functions/hash'
+import { useContext, useState } from "react"
+import { appContext } from "../context/appContext"
+import { useNavigate } from "react-router-dom"
 
 const Login = () => {
 
-    const onFinish = () => {
-        console.log('onFinish se ejecuto')
+    const navigate = useNavigate()
+    const { setUserData, setLogged } = useContext(appContext)
+    const [error, setError] = useState('')
+    const [errorDisplay, setErrorDisplay] = useState(false)
+
+    const onSubmit = async () => {
+        let email = document.getElementById("Email").value
+        let password = document.getElementById("Password").value
+
+        const data = {
+            email: email,
+            password: await encrypt(password),
+        }
+        let res = await login(data)
+        if(res.status == 200){
+            setLogged(true)
+            setUserData(res.data)
+            navigate('/menu')
+        }else if(res.status == 403){
+            setErrorDisplay(true)
+            setError('usuario no encontrado')
+        }else if(res.status == 401){
+            setErrorDisplay(true)
+            setError('contraseña incorrecta')
+        }else if(res.status == 500){
+            setErrorDisplay(true)
+            setError('error del servidor')
+        }
     }
 
     return(
         <>
-            <Form
-                className="loginPage"
-                onFinish={onFinish}
-            >
+            <Form className="loginPage">
                 <h1>Bienvenido a Administrative Group</h1>
                 <h2>Iniciar sesion</h2>
                 <Form.Item
@@ -28,8 +56,8 @@ const Login = () => {
                 </Form.Item>
 
                 <Form.Item
-                    label='Contraseña'
-                    name='Contraseña'
+                    label='Password'
+                    name='Password'
                     rules={[
                         {
                             required: true,
@@ -40,8 +68,10 @@ const Login = () => {
                     <Input.Password/>
                 </Form.Item>
 
+                { errorDisplay && <h2 style={{color: "tomato"}}>{error}</h2> }
+
                 <Form.Item>
-                    <Button htmlType="submit" type="primary" >
+                    <Button htmlType="submit" type="primary" onClick={onSubmit}>
                         Iniciar Sesion
                     </Button>
                 </Form.Item>
