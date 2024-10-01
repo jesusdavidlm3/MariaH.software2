@@ -8,7 +8,7 @@ import Root from './pages/Root'
 import ErrorPage from './pages/ErrorPage'
 import Login from './pages/Login'
 import Menu from './pages/Menu'
-import page3 from './pages/page3'
+import Employes from './pages/Employes'
 
 
 const router = createBrowserRouter([
@@ -26,8 +26,8 @@ const router = createBrowserRouter([
         element: <Menu/>
       },
       {
-        path: '/ch3',
-        element: <page3/>
+        path: '/Employes',
+        element: <Employes/>
       },
       
     ]

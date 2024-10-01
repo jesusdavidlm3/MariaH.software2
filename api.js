@@ -36,7 +36,16 @@ app.get('/api/obtenerInventario')
 
 
 //Casos de uso del gerente
-app.post('/api/createUser')
+app.post('/api/createUser', (req, res) => {
+    const { id, name, email, password, phone, type, address } = req.body
+    db.run('INSERT INTO users(id, name, email, password, phone, type, address) VALUES(?, ?, ?, ?, ?, ?, ?)', [id, name, email, password, phone, type, address], (err,) => {
+        if(err){
+            res.status(500).send('Error del servidor')
+        }else{
+            res.status(200).send('Creado con exito')
+        }
+    })
+})
 app.delete('/api/deleteUser')
 app.post('/api/createUser')
 app.get('/api/reportes')

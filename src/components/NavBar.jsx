@@ -1,12 +1,23 @@
 import { Button } from "antd"
+import { useContext, useEffect } from "react"
+import { appContext } from "../context/appContext"
+import { useNavigate } from "react-router-dom"
 
 const NavBar = () => {
+
+    const navigate = useNavigate()
+    const {userData, setUserData, setLogged, logged} = useContext(appContext)
+
+    function logout(){
+        navigate('/login')
+        setUserData('')
+        setLogged(false)
+    }
+
     return(
         <div className="NavBar">
-            <Button type="primary">opcion 1</Button>
-            <Button type="primary">opcion 2</Button>
-            <Button type="primary">opcion 3</Button>
-            <Button color="danger" variant="solid">opcion 4</Button>
+            <h1>Bienvenido {userData.name}</h1>
+            <Button color="danger" variant="solid" onClick={logout}>Cerrar Sesion</Button>
         </div>
     )
 }

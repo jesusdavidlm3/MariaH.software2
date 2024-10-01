@@ -49,6 +49,7 @@ const Login = () => {
                         {
                             required: true,
                             message: 'Por favor ingrese un correo electronico valido',
+                            type: 'email'
                         },
                     ]}
                 >
