@@ -46,8 +46,18 @@ app.post('/api/createUser', (req, res) => {
         }
     })
 })
+
+app.get('/api/getEmployes', (req, res) => {
+    db.all('SELECT * FROM users WHERE type = 0 OR type = 1', (err, users) => {
+        if(err){
+            res.status(500).send('Error del servidor')
+        }else{
+            res.status(200).send(users)
+        }
+    })
+})
+
 app.delete('/api/deleteUser')
-app.post('/api/createUser')
 app.get('/api/reportes')
 
 //Casos de uso del empleado

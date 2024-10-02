@@ -1,4 +1,4 @@
-import { Button, Form, Input } from "antd"
+import { Button, Form, Input, message } from "antd"
 import { login } from "../client/client"
 import { encrypt } from '../functions/hash'
 import { useContext, useState } from "react"
@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom"
 
 const Login = () => {
 
+    const [messageApi, contextHandler] = message.useMessage()
     const navigate = useNavigate()
     const { setUserData, setLogged } = useContext(appContext)
     const [error, setError] = useState('')
@@ -26,19 +27,26 @@ const Login = () => {
             setUserData(res.data)
             navigate('/menu')
         }else if(res.status == 403){
-            setErrorDisplay(true)
-            setError('usuario no encontrado')
+            messageApi.open({
+                type: "error",
+                content: 'Usuario no encontrado'
+            })
         }else if(res.status == 401){
-            setErrorDisplay(true)
-            setError('contraseña incorrecta')
+            messageApi.open({
+                type: "error",
+                content: 'Contraseña invalida'
+            })
         }else if(res.status == 500){
-            setErrorDisplay(true)
-            setError('error del servidor')
+            messageApi.open({
+                type: "error",
+                content: 'Error del servidor'
+            })
         }
     }
 
     return(
         <>
+            {contextHandler}
             <Form className="loginPage">
                 <h1>Bienvenido a Administrative Group</h1>
                 <h2>Iniciar sesion</h2>

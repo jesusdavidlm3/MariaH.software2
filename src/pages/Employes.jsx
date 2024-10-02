@@ -1,12 +1,32 @@
-import { Button, Form, Input, Modal, Select, message } from "antd"
-import { useState } from "react"
+import { Button, Form, Input, Modal, Select, message, Tooltip } from "antd"
+import { useEffect, useState } from "react"
 import { createUser } from "../client/client"
 import { encrypt } from '../functions/hash'
+import { getEmployes } from "../client/client"
+import { EditOutlined } from "@ant-design/icons"
+import { DeleteOutlined } from "@ant-design/icons"
+
 const Employes = () => {
 
     const [messageApi, contextHolder] = message.useMessage()
     const [newEmploye, setNewEmploye] = useState(false)
     const [cargo, setCargo] = useState(0)
+    const [showList, setShowList] = useState([])
+    const [fullList, setFullList] = useState([])
+
+    async function getEmployesList(){
+        let res = await getEmployes()
+        setFullList(res.data)
+    }
+
+    useEffect(() => {
+        getEmployesList()
+        setShowList(f => fullList)
+    }, [])
+
+    useEffect(() => {
+        setShowList(fullList)
+    }, [fullList])
 
     const submitNewEmploye = async () => {
         const userId = document.getElementById('userId').value
@@ -30,6 +50,7 @@ const Employes = () => {
         console.log(res)
         if(res.status == 200){
             setNewEmploye(false)
+            getEmployesList()
             messageApi.open({
                 type: 'success',
                 content: 'Empleado creado correctamente'
@@ -50,7 +71,23 @@ const Employes = () => {
                 <Button type="primary" onClick={() => setNewEmploye(true)}>Agregar empleado</Button>
             </div>
             <div className="list">
+                {showList.map((item) => (
+                    <div className="listItem" key={item.id}>
+                        <div className="info">
+                            <h1>{item.name}</h1>
+                            <h2>{item.id}</h2>
+                        </div>
 
+                        <div className="buttons">
+                            <Tooltip title='Editar'>
+                                <Button shape="circle" type="primary" icon={<EditOutlined />} size="large"/>
+                            </Tooltip>
+                            <Tooltip title='Borrar'>
+                                <Button shape="circle" variant="solid" color="danger" icon={<DeleteOutlined />} size="large"/>
+                            </Tooltip>
+                        </div>
+                    </div>
+                ))}
             </div>
 
             <Modal title='Agregar empleado' open={newEmploye} onCancel={() => setNewEmploye(false)} onOk={submitNewEmploye}>
