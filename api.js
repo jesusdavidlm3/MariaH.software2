@@ -57,7 +57,16 @@ app.get('/api/getEmployes', (req, res) => {
     })
 })
 
-app.delete('/api/deleteUser')
+app.delete('/api/deleteUser/:id', (req, res) => {
+    const id = req.params.id
+    db.run('DELETE FROM users WHERE id = ?', [id], (err) => {
+        if(err){
+            res.status(500).send('Error del servidor')
+        }else{
+            res.status(200).send('Eliminado con exito')
+        }
+    })
+})
 app.get('/api/reportes')
 
 //Casos de uso del empleado

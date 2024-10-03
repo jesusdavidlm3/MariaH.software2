@@ -2,14 +2,18 @@ import { Button, Form, Input, Modal, Select, message, Tooltip } from "antd"
 import { useEffect, useState } from "react"
 import { createUser } from "../client/client"
 import { encrypt } from '../functions/hash'
-import { getEmployes } from "../client/client"
+import { getEmployes, deleteUser } from "../client/client"
 import { EditOutlined } from "@ant-design/icons"
 import { DeleteOutlined } from "@ant-design/icons"
+import { NewUserModal, DeleteModal, EditUserModal } from "../components/UserModals"
 
 const Employes = () => {
 
     const [messageApi, contextHolder] = message.useMessage()
     const [newEmploye, setNewEmploye] = useState(false)
+    const [deleteEmploye, setDeleteEMploye] = useState(false)
+    const [editEmploye, setEditEmploye] = useState(false)
+    const [selectedEmploye, setSelectedEmploye] = useState({})
     const [cargo, setCargo] = useState(0)
     const [showList, setShowList] = useState([])
     const [fullList, setFullList] = useState([])
@@ -63,6 +67,24 @@ const Employes = () => {
         }
     }
 
+    const submitDeleteEmploye = async (id) => {
+        let res = await deleteUser(id)
+        
+        if(res.status == 200){
+            setDeleteEMploye(false)
+            getEmployesList()
+            messageApi.open({
+                type: "success",
+                content: 'Empleado eliminado con exito'
+            })
+        }else{
+            messageApi.open({
+                type: "error",
+                content: 'Ah ocurrido un error'
+            })
+        }
+    }
+
     return(
         <div className="Employes">
             {contextHolder}
@@ -80,48 +102,19 @@ const Employes = () => {
 
                         <div className="buttons">
                             <Tooltip title='Editar'>
-                                <Button shape="circle" type="primary" icon={<EditOutlined />} size="large"/>
+                                <Button shape="circle" type="primary" icon={<EditOutlined />} size="large" onClick={() => {setSelectedEmploye(item); setEditEmploye(true)}}/>
                             </Tooltip>
                             <Tooltip title='Borrar'>
-                                <Button shape="circle" variant="solid" color="danger" icon={<DeleteOutlined />} size="large"/>
+                                <Button shape="circle" variant="solid" color="danger" icon={<DeleteOutlined />} onClick={() => {setSelectedEmploye(item); setDeleteEMploye(true)}} size="large"/>
                             </Tooltip>
                         </div>
                     </div>
                 ))}
             </div>
 
-            <Modal title='Agregar empleado' open={newEmploye} onCancel={() => setNewEmploye(false)} onOk={submitNewEmploye}>
-                <Form>
-                    <Form.Item name="userId">
-                        <Input placeholder="Cedula"></Input>
-                    </Form.Item>
-                    <Form.Item name="userName">
-                        <Input placeholder="Nombre"></Input>
-                    </Form.Item>
-                    <Form.Item name="userEmail" rules={[{type: "email", message: 'Por favor ingrese un correo valido'}]}>
-                        <Input placeholder="Correo electronico"></Input>
-                    </Form.Item>
-                    <Form.Item name="userAddress">
-                        <Input placeholder="Direccion"></Input>
-                    </Form.Item>
-                    <Form.Item name="userPhone">
-                        <Input placeholder="Telefono"></Input>
-                    </Form.Item>
-                    <Form.Item name="userPassword">
-                        <Input.Password placeholder="Contraseña"></Input.Password>
-                    </Form.Item>
-                    <Form.Item label='Cargo'>
-                        <Select
-                        defaultValue={'Empleado'}
-                        onChange={(e) => setCargo(e)}
-                        options={[
-                            {value: 0, label: 'Empleado'},
-                            {value: 1, label: 'Gerente'}
-                        ]}
-                        />
-                    </Form.Item>
-                </Form>
-            </Modal>
+            <NewUserModal title='Agregar empleado' open={newEmploye} onCancel={() => setNewEmploye(false)} client={false} cargoControl={setCargo} onOk={submitNewEmploye}/>
+            <DeleteModal open={deleteEmploye} onCancel={() => setDeleteEMploye(false)} onOk={() => submitDeleteEmploye(selectedEmploye.id)}/>
+            <EditUserModal open={editEmploye} onCancel={() => setEditEmploye(false)} info={selectedEmploye} title='Editar Empleado' client={false}/>
         </div>
     )
 }

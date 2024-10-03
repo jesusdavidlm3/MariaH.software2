@@ -26,6 +26,15 @@ export async function getEmployes(){
         let res = await axios.get(`${url}/api/getEmployes`)
         return res
     }catch(err){
+        return err
+    }
+}
+
+export async function deleteUser(id){
+    try{
+        let res = await axios.delete(`${url}/api/deleteUser/${id}`)
         return res
+    }catch(err){
+        return err
     }
 }
