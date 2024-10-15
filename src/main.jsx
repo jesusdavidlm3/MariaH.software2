@@ -9,6 +9,7 @@ import ErrorPage from './pages/ErrorPage'
 import Login from './pages/Login'
 import Menu from './pages/Menu'
 import Employes from './pages/Employes'
+import Clients from './pages/Clientes'
 
 
 const router = createBrowserRouter([
@@ -29,7 +30,10 @@ const router = createBrowserRouter([
         path: '/Employes',
         element: <Employes/>
       },
-      
+      {
+        path: '/Clients',
+        element: <Clients/>
+      },
     ]
   }
 ])

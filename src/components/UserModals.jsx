@@ -19,20 +19,24 @@ export const NewUserModal = ({title, open, onCancel, client, cargoControl, onOk 
                     <Form.Item name="userPhone">
                         <Input placeholder="Telefono"></Input>
                     </Form.Item>
-                    <Form.Item name="userPassword">
-                        <Input.Password placeholder="Contraseña" disabled={client}></Input.Password>
-                    </Form.Item>
-                    <Form.Item label='Cargo'>
-                        <Select
-                        disabled={client}
-                        defaultValue={'Empleado'}
-                        onChange={(e) => cargoControl(e)}
-                        options={[
-                            {value: 0, label: 'Empleado'},
-                            {value: 1, label: 'Gerente'}
-                        ]}
-                        />
-                    </Form.Item>
+                    { !client && 
+                    <>
+                        <Form.Item name="userPassword">
+                            <Input.Password placeholder="Contraseña" disabled={client}></Input.Password>
+                        </Form.Item>
+                        <Form.Item label='Cargo'>
+                            <Select
+                            disabled={client}
+                            defaultValue={'Empleado'}
+                            onChange={(e) => cargoControl(e)}
+                            options={[
+                                {value: 0, label: 'Empleado'},
+                                {value: 1, label: 'Gerente'}
+                            ]}
+                            />
+                        </Form.Item>
+                    </>
+                    }
                 </Form>
             </Modal>
     )
@@ -40,7 +44,7 @@ export const NewUserModal = ({title, open, onCancel, client, cargoControl, onOk 
 
 export const EditUserModal = ({title, open, onCancel, cargoControlEdited, onOk, info, client }) => {
     return(
-        <Modal title={title} open={open} onCancel={onCancel} onOk={onOk} >
+        <Modal title={title} open={open} onCancel={onCancel} onOk={onOk} destroyOnClose>
                 <Form>
                     <Form.Item name="userId">
                         <Input placeholder="Cedula" defaultValue={info.id} disabled={true}></Input>

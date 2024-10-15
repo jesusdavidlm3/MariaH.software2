@@ -32,13 +32,21 @@ app.post('/api/login', (req, res) => {
     })
 })
 
-app.get('/api/obtenerInventario')
+app.get('/api/obtenerInventario', (req, res) => {
+    db.all('SELECT * FROM products', (err, productList) => {
+        if(err){
+            res.status(500).send('error del servidor')
+        }else{
+            res.status(200).send(productList)
+        }
+    })
+})
 
 
 //Casos de uso del gerente
 app.post('/api/createUser', (req, res) => {
     const { id, name, email, password, phone, type, address } = req.body
-    db.run('INSERT INTO users(id, name, email, password, phone, type, address) VALUES(?, ?, ?, ?, ?, ?, ?)', [id, name, email, password, phone, type, address], (err,) => {
+    db.run('INSERT INTO users(id, name, email, password, phone, type, address) VALUES(?, ?, ?, ?, ?, ?, ?)', [id, name, email, password, phone, type, address], (err) => {
         if(err){
             res.status(500).send('Error del servidor')
         }else{
@@ -57,6 +65,16 @@ app.get('/api/getEmployes', (req, res) => {
     })
 })
 
+app.get('/api/getClients', (req, res) => {
+    db.all('SELECT * FROM users WHERE type = 2', (err, users) => {
+        if(err){
+            res.status(500).send('Error del servidor')
+        }else{
+            res.status(200).send(users)
+        }
+    })
+})
+
 app.delete('/api/deleteUser/:id', (req, res) => {
     const id = req.params.id
     db.run('DELETE FROM users WHERE id = ?', [id], (err) => {
@@ -67,14 +85,37 @@ app.delete('/api/deleteUser/:id', (req, res) => {
         }
     })
 })
-app.get('/api/reportes')
+
+
+app.get('/api/reportes')  //pendiente (generar reportes)
 
 //Casos de uso del empleado
-app.post('api/registrarCompra')
-app.post('/api/agregarProducto')
-app.put('api/editarProducto')
-app.delete('api/eliminarProducto')
-app.get('/api/emitirFactura')
+app.post('api/registrarCompra')   //pendiente (agregar compra)
+
+app.post('/api/agregarProducto', (req, res) => {
+    const {id, name, quantity, price} = req.body
+    db.run('INSERT INTO products(id, name, quantity, price) VALUES(?, ?, ?, ?)', [id, name, quantity, price], (err) => {
+        if(err){
+            res.status(500).send('error del servidor')
+        }else{
+            res.status(200).send('Agregado correctamente')
+        }
+    })
+})
+
+app.put('api/editarProducto')   //pendiente (editar productos existentes)
+
+app.delete('api/eliminarProducto/:id', (req, res) => {
+    const id = req.params.id
+    db.run('DELETE FROM products WHERE id = ?', [id], (err) => {
+        if(err){
+            res.status(500).send('error del servidor')
+        }else{
+            res.status(200).send('eliminado correctamente')
+        }
+    })
+})
+app.get('/api/emitirFactura')   //pendiente (Generar facturas)
 
 const server = createServer(app);
 

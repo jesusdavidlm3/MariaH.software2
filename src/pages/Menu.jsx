@@ -46,7 +46,7 @@ const Menu = () => {
                             <ShoppingFilled style={{fontSize: '60px'}}/>
                             <h4>Facturacion</h4>
                         </div>
-                        <div className="card">
+                        <div className="card" onClick={() => navigate('/Clients')}>
                             <TeamOutlined style={{fontSize: '60px'}}/>
                             <h4>Clientes</h4>
                         </div>
