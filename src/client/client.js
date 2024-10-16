@@ -21,6 +21,24 @@ export async function createUser(data){
     }
 }
 
+export async function deleteUser(id){
+    try{
+        let res = await axios.delete(`${url}/api/deleteUser/${id}`)
+        return res
+    }catch(err){
+        return err
+    }
+}
+
+export async function editUser(data) {
+    try{
+        let res = axios.patch(`${url}/api/editUser`, data)
+        return res
+    }catch(err){
+        return res
+    }
+}
+
 export async function getEmployes(){
     try{
         let res = await axios.get(`${url}/api/getEmployes`)
@@ -33,15 +51,6 @@ export async function getEmployes(){
 export async function getClients(){
     try{
         let res = await axios.get(`${url}/api/getClients`)
-        return res
-    }catch(err){
-        return err
-    }
-}
-
-export async function deleteUser(id){
-    try{
-        let res = await axios.delete(`${url}/api/deleteUser/${id}`)
         return res
     }catch(err){
         return err
@@ -72,5 +81,14 @@ export async function deleteProduct(id) {
         return res
     }catch(err){
         return err
+    }
+}
+
+export async function EditProduct(data) {
+    try{
+        let res = axios.patch(`${url}/api/editarProducto`, data)
+        return res
+    }catch(err){
+        return res
     }
 }

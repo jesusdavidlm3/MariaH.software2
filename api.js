@@ -55,6 +55,28 @@ app.post('/api/createUser', (req, res) => {
     })
 })
 
+app.delete('/api/deleteUser/:id', (req, res) => {
+    const id = req.params.id
+    db.run('DELETE FROM users WHERE id = ?', [id], (err) => {
+        if(err){
+            res.status(500).send('Error del servidor')
+        }else{
+            res.status(200).send('Eliminado con exito')
+        }
+    })
+})
+
+app.patch('/api/editUser', (req, res) => {
+    const { id, name, email, password, phone, type, address } = req.body
+    db.run('UPDATE users SET name = ?, email = ?, password = ?, phone = ?, type = ?, address = ? WHERE id = ?', [name, email, password, phone, type, address, id], (err) => {
+        if(err){
+            res.status(500).send('error del servidor')
+        }else{
+            res.status(200).send('editado con exito')
+        }
+    })
+})
+
 app.get('/api/getEmployes', (req, res) => {
     db.all('SELECT * FROM users WHERE type = 0 OR type = 1', (err, users) => {
         if(err){
@@ -71,17 +93,6 @@ app.get('/api/getClients', (req, res) => {
             res.status(500).send('Error del servidor')
         }else{
             res.status(200).send(users)
-        }
-    })
-})
-
-app.delete('/api/deleteUser/:id', (req, res) => {
-    const id = req.params.id
-    db.run('DELETE FROM users WHERE id = ?', [id], (err) => {
-        if(err){
-            res.status(500).send('Error del servidor')
-        }else{
-            res.status(200).send('Eliminado con exito')
         }
     })
 })
@@ -103,7 +114,16 @@ app.post('/api/agregarProducto', (req, res) => {
     })
 })
 
-app.put('api/editarProducto')   //pendiente (editar productos existentes)
+app.put('api/editarProducto', (req, res) => {
+    const {id, name, quantity, price} = req.body
+    db.run('UPDATE INTO products(name, quantity, price) VALUES(?, ?, ?)', [name, quantity, price], (err) => {
+        if(err){
+            res.status(500).send('error del servidor')
+        }else{
+            res.status(200).send('editado correctamente')
+        }
+    })
+})
 
 app.delete('api/eliminarProducto/:id', (req, res) => {
     const id = req.params.id
