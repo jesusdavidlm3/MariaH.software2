@@ -67,8 +67,8 @@ app.delete('/api/deleteUser/:id', (req, res) => {
 })
 
 app.patch('/api/editUser', (req, res) => {
-    const { id, name, email, password, phone, type, address } = req.body
-    db.run('UPDATE users SET name = ?, email = ?, password = ?, phone = ?, type = ?, address = ? WHERE id = ?', [name, email, password, phone, type, address, id], (err) => {
+    const { id, name, email, phone, type, address } = req.body
+    db.run('UPDATE users SET name = ?, email = ?, phone = ?, type = ?, address = ? WHERE id = ?', [name, email, phone, type, address, id], (err) => {
         if(err){
             res.status(500).send('error del servidor')
         }else{

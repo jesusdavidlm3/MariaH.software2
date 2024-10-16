@@ -46,25 +46,23 @@ export const EditUserModal = ({title, open, onCancel, cargoControlEdited, onOk, 
     return(
         <Modal title={title} open={open} onCancel={onCancel} onOk={onOk} destroyOnClose>
                 <Form>
-                    <Form.Item name="userId">
+                    <Form.Item name="editId">
                         <Input placeholder="Cedula" defaultValue={info.id} disabled={true}></Input>
                     </Form.Item>
-                    <Form.Item name="userName">
+                    <Form.Item name="editName">
                         <Input placeholder="Nombre" defaultValue={info.name} disabled={true}></Input>
                     </Form.Item>
-                    <Form.Item name="userEmail" rules={[{type: "email", message: 'Por favor ingrese un correo valido'}]}>
+                    <Form.Item name="editEmail" rules={[{type: "email", message: 'Por favor ingrese un correo valido'}]}>
                         <Input placeholder="Correo electronico" defaultValue={info.email}></Input>
                     </Form.Item>
-                    <Form.Item name="userAddress">
+                    <Form.Item name="editAddress">
                         <Input placeholder="Direccion" defaultValue={info.address}></Input>
                     </Form.Item>
-                    <Form.Item name="userPhone">
+                    <Form.Item name="editPhone">
                         <Input placeholder="Telefono" defaultValue={info.phone}></Input>
                     </Form.Item>
-                    <Form.Item name="userPassword">
-                        <Input.Password placeholder="Contraseña" disabled={client} ></Input.Password>
-                    </Form.Item>
-                    <Form.Item label='Cargo'>
+                    { !client && 
+                        <Form.Item label='Cargo'>
                         <Select
                         disabled={client}
                         defaultValue={info.type}
@@ -75,6 +73,7 @@ export const EditUserModal = ({title, open, onCancel, cargoControlEdited, onOk, 
                         ]}
                         />
                     </Form.Item>
+                    }
                 </Form>
             </Modal>
     )

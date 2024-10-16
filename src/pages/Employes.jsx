@@ -1,8 +1,7 @@
 import { Button, Form, Input, Modal, Select, message, Tooltip } from "antd"
 import { useEffect, useState } from "react"
-import { createUser } from "../client/client"
 import { encrypt } from '../functions/hash'
-import { getEmployes, deleteUser } from "../client/client"
+import { getEmployes, deleteUser, createUser, editUser } from "../client/client"
 import { EditOutlined } from "@ant-design/icons"
 import { DeleteOutlined } from "@ant-design/icons"
 import { NewUserModal, DeleteModal, EditUserModal } from "../components/UserModals"
@@ -39,7 +38,6 @@ const Employes = () => {
         const userPhone = document.getElementById('userPhone').value
         const userAddress = document.getElementById('userAddress').value
         const userPassword = document.getElementById('userPassword').value
-        // const userType = document.getElementById('userType').value
 
         const data = {
             id: userId,
@@ -85,6 +83,37 @@ const Employes = () => {
         }
     }
 
+    const submitEditEmploye = async () => {
+        const editId = document.getElementById('editId').value
+        const editName = document.getElementById('editName').value
+        const editEmail = document.getElementById('editEmail').value
+        const editPhone = document.getElementById('editPhone').value
+        const editAddress = document.getElementById('editAddress').value
+
+        const data = {
+            id: editId,
+            name: editName,
+            email: editEmail,
+            phone: editPhone, 
+            type: cargo,
+            address: editAddress,
+        }
+        let res = await editUser(data)
+        if(res.status == 200){
+            setEditEmploye(false)
+            getEmployesList()
+            messageApi.open({
+                type: 'success',
+                content: 'Empleado editado correctamente'
+            })
+        }else{
+            messageApi.open({
+                type: 'error',
+                content: 'Ah ocurrido un error'
+            })
+        }
+    }
+
     return(
         <div className="Employes">
             {contextHolder}
@@ -114,7 +143,7 @@ const Employes = () => {
 
             <NewUserModal title='Agregar empleado' open={newEmploye} onCancel={() => setNewEmploye(false)} client={false} cargoControl={setCargo} onOk={submitNewEmploye}/>
             <DeleteModal open={deleteEmploye} onCancel={() => setDeleteEMploye(false)} onOk={() => submitDeleteEmploye(selectedEmploye.id)}/>
-            <EditUserModal open={editEmploye} onCancel={() => setEditEmploye(false)} info={selectedEmploye} title='Editar Empleado' client={false}/>
+            <EditUserModal open={editEmploye} onCancel={() => setEditEmploye(false)} info={selectedEmploye} title='Editar Empleado' client={false} onOk={submitEditEmploye}/>
         </div>
     )
 }

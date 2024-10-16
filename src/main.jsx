@@ -10,7 +10,9 @@ import Login from './pages/Login'
 import Menu from './pages/Menu'
 import Employes from './pages/Employes'
 import Clients from './pages/Clientes'
-
+import Facturacion from './pages/Facturacion'
+import Ventas from './pages/Ventas'
+import Inventario from './pages/Inventario'
 
 const router = createBrowserRouter([
   {
@@ -33,6 +35,18 @@ const router = createBrowserRouter([
       {
         path: '/Clients',
         element: <Clients/>
+      },
+      {
+        path: '/Facturacion',
+        element: <Facturacion/>
+      },
+      {
+        path: '/Ventas',
+        element: <Ventas/>
+      },
+      {
+        path: '/Inventario',
+        element: <Inventario/>
       },
     ]
   }

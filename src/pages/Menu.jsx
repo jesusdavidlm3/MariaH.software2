@@ -13,7 +13,6 @@ const Menu = () => {
     const { userData } = useContext(appContext)
     const type = userData.type
 
-
     return(
         <>
             { type == 1 && (
@@ -25,11 +24,11 @@ const Menu = () => {
                             <IdcardFilled style={{fontSize: '60px'}} />
                             <h4>Empleados</h4>
                         </div>
-                        <div className="card">
+                        <div className="card" onClick={() => navigate('/Ventas')}>
                             <CopyFilled style={{fontSize: '60px'}}/>
                             <h4>Ventas</h4>
                         </div>
-                        <div className="card">
+                        <div className="card" onClick={() => navigate('/Inventario')}>
                             <ProductFilled style={{fontSize: '60px'}} />
                             <h4>Inventario</h4>
                         </div>
@@ -41,7 +40,7 @@ const Menu = () => {
                 <div className="menu">
                     <h1>Bienvenido a administrative group</h1>
                     <h2>Empleados</h2>
-                    <div className="modules">
+                    <div className="modules" onClick={() => navigate('/Facturacion')}>
                         <div className="card">
                             <ShoppingFilled style={{fontSize: '60px'}}/>
                             <h4>Facturacion</h4>
@@ -50,7 +49,7 @@ const Menu = () => {
                             <TeamOutlined style={{fontSize: '60px'}}/>
                             <h4>Clientes</h4>
                         </div>
-                        <div className="card">
+                        <div className="card" onClick={() => navigate('/Inventario')}>
                             <ProductFilled style={{fontSize: '60px'}} />
                             <h4>Inventario</h4>
                         </div>

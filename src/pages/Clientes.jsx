@@ -1,7 +1,7 @@
 import { Button, Form, Input, Modal, Select, message, Tooltip } from "antd"
 import { useEffect, useState } from "react"
 import { encrypt } from '../functions/hash'
-import { getClients, deleteUser, createUser } from "../client/client"
+import { getClients, deleteUser, createUser, editUser } from "../client/client"
 import { EditOutlined } from "@ant-design/icons"
 import { DeleteOutlined } from "@ant-design/icons"
 import { NewUserModal, DeleteModal, EditUserModal } from "../components/UserModals"
@@ -80,6 +80,37 @@ const Clients = () => {
         }
     }
 
+    const submitEditClient = async () => {
+        const editId = document.getElementById('editId').value
+        const editName = document.getElementById('editName').value
+        const editEmail = document.getElementById('editEmail').value
+        const editPhone = document.getElementById('editPhone').value
+        const editAddress = document.getElementById('editAddress').value
+
+        const data = {
+            id: editId,
+            name: editName,
+            email: editEmail,
+            phone: editPhone, 
+            type: 2,
+            address: editAddress,
+        }
+        let res = await editUser(data)
+        if(res.status == 200){
+            setEditClient(false)
+            getClientsList()
+            messageApi.open({
+                type: 'success',
+                content: 'Cliente editado correctamente'
+            })
+        }else{
+            messageApi.open({
+                type: 'error',
+                content: 'Ah ocurrido un error'
+            })
+        }
+    }
+
     return(
         <div className="Employes">
             {contextHolder}
@@ -109,7 +140,7 @@ const Clients = () => {
 
             <NewUserModal title='Registrar cliente' open={newClient} onCancel={() => setNewClient(false)} client={true} onOk={submitNewClient}/>
             <DeleteModal open={deleteClient} onCancel={() => setDeleteClient(false)} onOk={() => submitDeleteClient(selectedClient.id)}/>
-            <EditUserModal open={editClient} onCancel={() => setEditClient(false)} info={selectedClient} title='Editar cliente' client={true}/>
+            <EditUserModal open={editClient} onCancel={() => setEditClient(false)} info={selectedClient} title='Editar cliente' client={true} onOk={submitEditClient}/>
         </div>
     )
 }
