@@ -114,10 +114,11 @@ app.post('/api/agregarProducto', (req, res) => {
     })
 })
 
-app.put('api/editarProducto', (req, res) => {
+app.patch('/api/editarProducto', (req, res) => {
     const {id, name, quantity, price} = req.body
-    db.run('UPDATE INTO products(name, quantity, price) VALUES(?, ?, ?)', [name, quantity, price], (err) => {
+    db.run('UPDATE products SET name = ?, quantity = ?, price = ? WHERE id = ?', [name, quantity, price, id], (err) => {
         if(err){
+            console.log(err)
             res.status(500).send('error del servidor')
         }else{
             res.status(200).send('editado correctamente')
@@ -125,10 +126,11 @@ app.put('api/editarProducto', (req, res) => {
     })
 })
 
-app.delete('api/eliminarProducto/:id', (req, res) => {
+app.delete('/api/eliminarProducto/:id', (req, res) => {
     const id = req.params.id
     db.run('DELETE FROM products WHERE id = ?', [id], (err) => {
         if(err){
+            console.log(err)
             res.status(500).send('error del servidor')
         }else{
             res.status(200).send('eliminado correctamente')

@@ -84,7 +84,7 @@ export async function deleteProduct(id) {
     }
 }
 
-export async function EditProduct(data) {
+export async function editProduct(data) {
     try{
         let res = axios.patch(`${url}/api/editarProducto`, data)
         return res
