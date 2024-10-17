@@ -92,3 +92,12 @@ export async function editProduct(data) {
         return res
     }
 }
+
+export async function checkCliente(data){
+    try{
+        let res = axios.post(`${url}/api/checkCliente`, data)
+        return res
+    }catch(err){
+        return err
+    }
+}

@@ -101,7 +101,21 @@ app.get('/api/getClients', (req, res) => {
 app.get('/api/reportes')  //pendiente (generar reportes)
 
 //Casos de uso del empleado
-app.post('api/registrarCompra')   //pendiente (agregar compra)
+app.post('/api/registrarCompra')   //pendiente (agregar compra)
+
+app.post('/api/checkCliente', (req, res) => {
+    const {id} = req.body
+    db.run('SELECT * FROM users WHERE id = ?', [id], (err, user) => {
+        if(err){
+            console.log(err)
+            res.status(500).send('error del servidor')
+        }else if(!user){
+            res.status(404).send({value: false, message: 'Cliente no encontrado'})
+        }else{
+            res.status(200).send({value: true, message: 'Cliente registrado'})
+        }
+    })
+})
 
 app.post('/api/agregarProducto', (req, res) => {
     const {id, name, quantity, price} = req.body
