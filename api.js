@@ -101,9 +101,28 @@ app.get('/api/getClients', (req, res) => {
 app.get('/api/reportes')  //pendiente (generar reportes)
 
 //Casos de uso del empleado
-app.post('/api/registrarCompra')   //pendiente (agregar compra)
+app.post('/api/registrarCompra', (req, res) => {
+    const {date, paymentMethod, employeId, clientId, products} = req.body
+    db.run(`INSERT INTO facturas(date paymentMethod, employeId, clientId) VALUES(${id}, ${date}, ${paymentMethod}, ${employeId}, ${clientId})`, (err, factura) => {
+        if(err){
+            console.log(err)
+            res.status(500).send('error del servidor')
+        }else{
+            try{
+                products.forEach(item => {
+                    db.run(`INSERT INTO productosFacturas(facturaId, productoId, quantity) VALUES(${factura}, ${item.id}, ${item.quantity})`)
+                });
+                res.status(200).send('factura realizada con exito')
+            }catch(err){
+                console.log(err)
+                res.status(500).send('error del servidor')
+            }
+        }
+    })
+})
 
 app.post('/api/checkCliente', (req, res) => {
+    console.log('ejecutando')
     const {id} = req.body
     db.run('SELECT * FROM users WHERE id = ?', [id], (err, user) => {
         if(err){

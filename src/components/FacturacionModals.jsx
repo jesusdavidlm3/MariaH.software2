@@ -1,4 +1,4 @@
-import { Modal, InputNumber, Form } from "antd";
+import { Modal, InputNumber, Form, Select } from "antd";
 
 export const ConfirmProduct = ({onOk, onCancel, open, info, quantityHandler}) => {
     return(
@@ -7,6 +7,16 @@ export const ConfirmProduct = ({onOk, onCancel, open, info, quantityHandler}) =>
                 <Form.Item label='Cantidad:'>
                     <InputNumber onChange={(e) => quantityHandler(e)} defaultValue={1}/>
                 </Form.Item>
+            </Form>
+        </Modal>
+    )
+}
+
+export const ConfirmInvoice = ({open, onOk, onCancel, paymentMethodHanlder}) => {
+    return(
+        <Modal title='Confirmar factura?' open={open} onOk={onOk} onCancel={onCancel}>
+            <Form>
+                <Select onChange={(e) => paymentMethodHanlder(e)}/>
             </Form>
         </Modal>
     )

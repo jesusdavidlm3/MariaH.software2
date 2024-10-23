@@ -77,7 +77,7 @@ export async function addProduct(data) {
 
 export async function deleteProduct(id) {
     try{
-        let res = axios.delete(`${url}/api/eliminarProducto/${id}`)
+        let res = await axios.delete(`${url}/api/eliminarProducto/${id}`)
         return res
     }catch(err){
         return err
@@ -86,7 +86,7 @@ export async function deleteProduct(id) {
 
 export async function editProduct(data) {
     try{
-        let res = axios.patch(`${url}/api/editarProducto`, data)
+        let res = await axios.patch(`${url}/api/editarProducto`, data)
         return res
     }catch(err){
         return res
@@ -95,7 +95,7 @@ export async function editProduct(data) {
 
 export async function checkCliente(data){
     try{
-        let res = axios.post(`${url}/api/checkCliente`, data)
+        let res = await axios.post(`${url}/api/checkCliente`, data)
         return res
     }catch(err){
         return err

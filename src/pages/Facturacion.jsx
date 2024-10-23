@@ -1,19 +1,33 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useContext } from "react"
 import { getInventory, checkCliente } from "../client/client"
-import { Input, Button, Tooltip, InputNumber } from "antd"
-import { PlusOutlined, CloseOutlined, CheckCircleOutlined, CloseCircleOutlined } from "@ant-design/icons"
-import { ConfirmProduct } from '../components/FacturacionModals'
+import { Input, Button, Tooltip, InputNumber, Divider, Space } from "antd"
+import { PlusOutlined, CloseOutlined, CheckCircleOutlined, CloseCircleOutlined, SearchOutlined } from "@ant-design/icons"
+import { ConfirmInvoice, ConfirmProduct } from '../components/FacturacionModals'
+import { appContext } from '../context/appContext'
 
 const Facturacion = () => {
 
+    // selectores
+    const [quantitySelector, setQuantitySelector] = useState(0)
+    const [paymentMethodSelector, setPaymentMethodSelector] = useState(0)
+
+    // control de modals
+    const [confirmProductModal, setConfirmProductModal] = useState(false)
+    const [confirmInvoiceModal, setConfirmInvoiceModal] = useState(false)
+
+    // datos
+    const {userData} = useContext(appContext)
+    let confirmedId
     const [actualInvoice, setActualInvoice] = useState([])
+
+    // Manejo de UI
     const [fullList, setFullList] = useState([])
     const [showList, setShowList] = useState([])
-    const [quantitySelector, setQuantitySelector] = useState(0)
-    const [confirmProductModal, setConfirmProductModal] = useState(false)
     const [selectedProduct, setSelectedProduct] = useState('')
     const [userFound, setUserFound] = useState(false)
     const [totalAmount, setTotalAmount] = useState(0)
+
+
 
     async function getProductList(){
         let res = await getInventory()
@@ -49,21 +63,40 @@ const Facturacion = () => {
         }
     }
 
-    const checkClientId = async (id) => {
+    const checkClientId = async () => {
+        let id = document.getElementById('idField').value
+        console.log(id)
         let res = checkCliente(id)
         if(res.status == 200){
             setUserFound(true)
+            confirmedId = id
         }
+    }
+
+    const submitInvoice = async () => {
+        const data = {
+            date: new Date(),
+            paymentMethod: paymentMethodSelector,
+            employeId: userData.id,
+            clientId: confirmedId,
+            products: actualInvoice
+        }
+        console.log(data)
     }
 
     return(
         <div className='Facturacion'>
             <div className="latPanel">
                 <div className="idBar">
-                    <InputNumber disabled={userFound} placeholder="Cedula"/>
+                    <Space.Compact>
+                        <InputNumber disabled={userFound} placeholder="Cedula" id="idField"/>
+                        <Tooltip title='Buscar'>
+                            <Button icon={<SearchOutlined />} onClick={checkClientId}/>
+                        </Tooltip>
+                    </Space.Compact>
                     {userFound ? (
                         <Tooltip title='Cliente verificado'>
-                            <CheckCircleOutlined style={{color: 'red'}} />
+                            <CheckCircleOutlined style={{color: 'green', fontSize: '30px'}} />
                         </Tooltip>
                     ):(
                         <Tooltip title='Ingrese cedula del cliente'>
@@ -72,6 +105,7 @@ const Facturacion = () => {
                     )}
                 </div>
                 <div className="products">
+                    <Divider/>
                     {actualInvoice.map((item) => (
                         <div key={item.id} className="addedProduct">
                             <h4>{item.name} | ${item.price} | {item.quantity} Units.</h4>
@@ -82,21 +116,28 @@ const Facturacion = () => {
                     ))}
                 </div>
                 <div className="total">
-                <h1>Total: {totalAmount}</h1>
+                    <Divider/>
+                    <h1>Total: {totalAmount}</h1>
                 </div>
             </div>
 
 
-            <div className="list">
-                <Input placeholder="Buscar..."/>
-                {showList.map((item) => (
-                    <div key={item.id} className="listItem">
-                        <h3>{item.name} | {item.price}</h3>
-                        <Tooltip title='Agregar a la compra'>
-                            <Button shape="circle" icon={<PlusOutlined/>} onClick={() => {setSelectedProduct(item); setConfirmProductModal(true)}}/>
-                        </Tooltip>
-                    </div>
-                ))}
+            <div className="second">
+                <div className="list">
+                    <Input placeholder="Buscar..."/>
+                    {showList.map((item) => (
+                        <div key={item.id} className="listItem">
+                            <h3>{item.name} | {item.price}</h3>
+                            <Tooltip title='Agregar a la compra'>
+                                <Button shape="circle" icon={<PlusOutlined/>} onClick={() => {setSelectedProduct(item); setConfirmProductModal(true)}}/>
+                            </Tooltip>
+                        </div>
+                    ))}
+                </div>
+                <div className="finish">
+                    <Button variant="solid" color="danger" onClick={() => setActualInvoice([])}>Limpiar</Button>
+                    <Button type="primary" onClick={() => setConfirmInvoiceModal(true)}>Facturar</Button>
+                </div>
             </div>
             
             <ConfirmProduct
@@ -104,6 +145,13 @@ const Facturacion = () => {
                 onCancel={() => setConfirmProductModal(false)}
                 onOk={addToCart}
                 quantityHandler={setQuantitySelector}
+            />
+
+            <ConfirmInvoice
+                open={confirmInvoiceModal}
+                onOk={submitInvoice}
+                onCancel={() => setConfirmInvoiceModal(false)}
+                paymentMethodHanlder={setPaymentMethodSelector}
             />
         </div>
     )
