@@ -5,7 +5,7 @@ export const ConfirmProduct = ({onOk, onCancel, open, info, quantityHandler}) =>
         <Modal onOk={onOk} onCancel={onCancel} open={open} destroyOnClose title={`Agregar el producto a la compra?`}>
             <Form>
                 <Form.Item label='Cantidad:'>
-                    <InputNumber onChange={(e) => quantityHandler(e)} defaultValue={1}/>
+                    <InputNumber onChange={(e) => quantityHandler(e)} defaultValue={0}/>
                 </Form.Item>
             </Form>
         </Modal>

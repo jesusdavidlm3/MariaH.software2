@@ -3,6 +3,7 @@ import cors from 'cors';
 import bodyParser from 'body-parser';
 import sqlite3 from 'sqlite3';
 import { createServer } from 'http';
+import { v4 as idGenerator } from 'uuid';
 // import { encrypt } from './src/functions/hash'
 
 const app = Express();
@@ -113,15 +114,18 @@ app.get('/api/reportes')  //pendiente (generar reportes)
 //Casos de uso del empleado
 app.post('/api/registrarCompra', (req, res) => {
     const {date, paymentMethod, employeId, clientId, products} = req.body
-    db.run(`INSERT INTO facturas(date, paymentMethod, employeId, clientId) VALUES(${date}, ${paymentMethod}, ${employeId}, ${clientId})`, (err, factura) => {
+    const id = idGenerator()
+    db.run(`INSERT INTO facturas(id, date, paymentMethod, employeId, clientId) VALUES(?, ?, ?, ?, ?)`,[id, date, paymentMethod, employeId, clientId] ,(err) => {
         if(err){
             console.log(err)
             res.status(500).send('error del servidor')
         }else{
             try{
+                const insertProducts = db.prepare('INSERT INTO productosFacturas(facturaId, productoId, quantity) VALUES(?, ?, ?)')
                 products.forEach(item => {
-                    db.run(`INSERT INTO productosFacturas(facturaId, productoId, quantity) VALUES(${factura}, ${item.id}, ${item.quantity})`)
+                    insertProducts.run([id, item.id, item.quantity])
                 });
+                insertProducts.finalize()
                 res.status(200).send('factura realizada con exito')
             }catch(err){
                 console.log(err)

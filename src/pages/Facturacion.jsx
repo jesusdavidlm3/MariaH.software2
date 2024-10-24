@@ -117,10 +117,10 @@ const Facturacion = () => {
 
     const submitActualInvoice = async () => {
         const data = {
-            date: Date(),
+            date: `${new Date().getFullYear()}/${new Date().getMonth()+1}/${new Date().getDate()}`,
             paymentMethod: paymentMethodSelector,
             employeId: userData.id,
-            clientId: confirmedId,
+            clientId: userFound.id,
             products: actualInvoice
         }
         console.log(data)
@@ -131,8 +131,6 @@ const Facturacion = () => {
                 type: "success",
                 content: 'Compra registrada con exito'
             })
-        }else if(res.status == 404){
-
         }else{
             messageApi.open({
                 type: 'error',
@@ -167,7 +165,7 @@ const Facturacion = () => {
                     <Divider/>
                     {actualInvoice.map((item) => (
                         <div key={item.id} className="addedProduct">
-                            <h4>{item.name} | ${item.price} | {item.quantity} Units.</h4>
+                            <h4>{item.id} | {item.name} | {item.quantity} Units. | ${item.price}</h4>
                             <Tooltip title='Eliminar articulo'>
                                 <Button shape="circle" icon={<CloseOutlined />}/>
                             </Tooltip>
