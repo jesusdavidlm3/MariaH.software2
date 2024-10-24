@@ -42,6 +42,16 @@ app.get('/api/obtenerInventario', (req, res) => {
     })
 })
 
+app.get('/api/paymentMethods', (req, res) => {
+    db.all('SELECT * FROM paymentMethods', (err, list) => {
+        if(err){
+            console.log(err)
+            res.status(500).send('error del servidor')
+        }else{
+            res.status(200).send(list)
+        }
+    })
+})
 
 //Casos de uso del gerente
 app.post('/api/createUser', (req, res) => {
@@ -103,7 +113,7 @@ app.get('/api/reportes')  //pendiente (generar reportes)
 //Casos de uso del empleado
 app.post('/api/registrarCompra', (req, res) => {
     const {date, paymentMethod, employeId, clientId, products} = req.body
-    db.run(`INSERT INTO facturas(date paymentMethod, employeId, clientId) VALUES(${id}, ${date}, ${paymentMethod}, ${employeId}, ${clientId})`, (err, factura) => {
+    db.run(`INSERT INTO facturas(date, paymentMethod, employeId, clientId) VALUES(${date}, ${paymentMethod}, ${employeId}, ${clientId})`, (err, factura) => {
         if(err){
             console.log(err)
             res.status(500).send('error del servidor')
@@ -122,16 +132,15 @@ app.post('/api/registrarCompra', (req, res) => {
 })
 
 app.post('/api/checkCliente', (req, res) => {
-    console.log('ejecutando')
     const {id} = req.body
-    db.run('SELECT * FROM users WHERE id = ?', [id], (err, user) => {
+    db.get(`SELECT * FROM users WHERE id = ${id}`, (err, user) => {
         if(err){
             console.log(err)
             res.status(500).send('error del servidor')
         }else if(!user){
-            res.status(404).send({value: false, message: 'Cliente no encontrado'})
+            res.status(404).send('cliente no encontrado')
         }else{
-            res.status(200).send({value: true, message: 'Cliente registrado'})
+            res.status(200).send(user)
         }
     })
 })

@@ -3,15 +3,25 @@ import { IdcardFilled } from "@ant-design/icons"
 import { ProductFilled } from "@ant-design/icons"
 import { CopyFilled } from "@ant-design/icons"
 import { TeamOutlined } from "@ant-design/icons"
-import { useContext } from "react"
+import { useContext, useEffect } from "react"
 import { appContext } from "../context/appContext"
 import { useNavigate } from "react-router-dom"
+import { getPaymentMethods } from '../client/client'
 
 const Menu = () => {
 
     const navigate = useNavigate()
-    const { userData } = useContext(appContext)
+    const { userData, setPaymentMethodsList } = useContext(appContext)
     const type = userData.type
+
+    async function getPaymentMethodsList(){
+        let res = await getPaymentMethods()
+        setPaymentMethodsList(res.data)
+    }
+
+    useEffect(() => {
+        getPaymentMethodsList()
+    }, [])
 
     return(
         <>

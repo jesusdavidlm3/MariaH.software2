@@ -5,6 +5,7 @@ const AppContextProvider = ({children}) => {
 
     const [logged, setLogged] = useState(false)
     const [userData, setUserData] = useState('')
+    const [paymentMethodsList, setPaymentMethodsList] = useState([])
 
     return(
         <appContext.Provider value={{
@@ -12,6 +13,8 @@ const AppContextProvider = ({children}) => {
             setLogged,
             userData,
             setUserData,
+            paymentMethodsList,
+            setPaymentMethodsList
         }}>
             {children}
         </appContext.Provider>

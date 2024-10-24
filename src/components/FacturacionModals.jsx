@@ -12,11 +12,26 @@ export const ConfirmProduct = ({onOk, onCancel, open, info, quantityHandler}) =>
     )
 }
 
-export const ConfirmInvoice = ({open, onOk, onCancel, paymentMethodHanlder}) => {
+export const ConfirmInvoice = ({open, onOk, onCancel, paymentMethodHanlder, list}) => {
+
+    let options = []
+    list.forEach(item => {
+        if(options == {}){
+            options = [{value: item.id, label: item.name}]
+        }else{
+            options = [...options, {value: item.id, label: item.name}]
+        }
+    });
+
     return(
-        <Modal title='Confirmar factura?' open={open} onOk={onOk} onCancel={onCancel}>
+        <Modal title='Confirmar factura?' open={open} onOk={onOk} onCancel={onCancel} destroyOnClose>
             <Form>
-                <Select onChange={(e) => paymentMethodHanlder(e)}/>
+                <Form.Item label='Metodo de pago'>
+                    <Select
+                        onChange={(e) => paymentMethodHanlder(e)}
+                        options={options}
+                    />
+                </Form.Item>
             </Form>
         </Modal>
     )

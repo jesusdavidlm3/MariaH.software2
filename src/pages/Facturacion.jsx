@@ -1,8 +1,9 @@
 import { useState, useEffect, useContext } from "react"
-import { getInventory, checkCliente } from "../client/client"
-import { Input, Button, Tooltip, InputNumber, Divider, Space } from "antd"
-import { PlusOutlined, CloseOutlined, CheckCircleOutlined, CloseCircleOutlined, SearchOutlined } from "@ant-design/icons"
+import { getInventory, checkCliente, submitInvoice, createUser } from "../client/client"
+import { Input, Button, Tooltip, InputNumber, Divider, Space, message } from "antd"
+import { PlusOutlined, CloseOutlined, SearchOutlined } from "@ant-design/icons"
 import { ConfirmInvoice, ConfirmProduct } from '../components/FacturacionModals'
+import { NewUserModal } from "../components/UserModals"
 import { appContext } from '../context/appContext'
 
 const Facturacion = () => {
@@ -14,10 +15,11 @@ const Facturacion = () => {
     // control de modals
     const [confirmProductModal, setConfirmProductModal] = useState(false)
     const [confirmInvoiceModal, setConfirmInvoiceModal] = useState(false)
+    const [newClientModal, setNewClientModal] = useState(false)
 
     // datos
-    const {userData} = useContext(appContext)
-    let confirmedId
+    const {userData, paymentMethodsList} = useContext(appContext)
+    const [confirmedId, setConfirmedId] = useState()
     const [actualInvoice, setActualInvoice] = useState([])
 
     // Manejo de UI
@@ -26,6 +28,7 @@ const Facturacion = () => {
     const [selectedProduct, setSelectedProduct] = useState('')
     const [userFound, setUserFound] = useState(false)
     const [totalAmount, setTotalAmount] = useState(0)
+    const [messageApi, contextHandler] = message.useMessage()
 
 
 
@@ -65,45 +68,101 @@ const Facturacion = () => {
 
     const checkClientId = async () => {
         let id = document.getElementById('idField').value
-        console.log(id)
-        let res = checkCliente(id)
+        const data = {
+            id: id
+        }
+        let res = await checkCliente(data)
         if(res.status == 200){
-            setUserFound(true)
-            confirmedId = id
+            setUserFound(res.data)
+            setConfirmedId(id)
+        }else if(res.status == 404){
+            setNewClientModal(true)
         }
     }
 
-    const submitInvoice = async () => {
+    const submitNewClient = async () => {
+        const id = document.getElementById('userId').value
+        const name = document.getElementById('userName').value
+        const address = document.getElementById('userAddress').value
+        const phone = document.getElementById('userPhone').value
+
         const data = {
-            date: new Date(),
+            id: id,
+            name: name,
+            address: address, 
+            phone: phone
+        }
+
+        let res = await createUser(data)
+        if(res.status == 200){
+            setNewClientModal(false)
+            messageApi.open({
+                type: 'success',
+                content: 'Nuevo cliente registrado'
+            })
+            setUserFound({
+                id: id,
+                name: name,
+                address: address,
+                phone: phone
+            })
+        }else{
+            setNewClientModal(false)
+            messageApi.open({
+                type: 'error',
+                content: 'Ah ocurrido un error'
+            })
+        }
+    }
+
+    const submitActualInvoice = async () => {
+        const data = {
+            date: Date(),
             paymentMethod: paymentMethodSelector,
             employeId: userData.id,
             clientId: confirmedId,
             products: actualInvoice
         }
         console.log(data)
+
+        let res = await submitInvoice(data)
+        if(res.status == 200){
+            messageApi.open({
+                type: "success",
+                content: 'Compra registrada con exito'
+            })
+        }else if(res.status == 404){
+
+        }else{
+            messageApi.open({
+                type: 'error',
+                content: 'Ah ocurrido un error'
+            })
+        }
     }
 
     return(
         <div className='Facturacion'>
+            {contextHandler}
             <div className="latPanel">
-                <div className="idBar">
-                    <Space.Compact>
-                        <InputNumber disabled={userFound} placeholder="Cedula" id="idField"/>
-                        <Tooltip title='Buscar'>
-                            <Button icon={<SearchOutlined />} onClick={checkClientId}/>
-                        </Tooltip>
-                    </Space.Compact>
-                    {userFound ? (
-                        <Tooltip title='Cliente verificado'>
-                            <CheckCircleOutlined style={{color: 'green', fontSize: '30px'}} />
-                        </Tooltip>
-                    ):(
-                        <Tooltip title='Ingrese cedula del cliente'>
-                            <CloseCircleOutlined style={{color: 'red', fontSize: '30px'}}/>
-                        </Tooltip>
-                    )}
-                </div>
+                {userFound ? (
+                    <div className='infoClient'>
+                        <h4>C.I.: {userFound.id}</h4>
+                        <h4>Nombre: {userFound.name}</h4>
+                        <h4>Direccion: {userFound.address}</h4>
+                        <h4>Telefono: {userFound.phone}</h4>
+                    </div>
+                ):(
+                    <div className="idBar">
+                        <Space.Compact>
+                            <InputNumber disabled={userFound} placeholder="Cedula" id="idField"/>
+                            <Tooltip title='Buscar'>
+                                <Button icon={<SearchOutlined />} onClick={checkClientId} disabled={userFound}/>
+                            </Tooltip>
+                        </Space.Compact>
+                    </div>
+                )}
+                
                 <div className="products">
                     <Divider/>
                     {actualInvoice.map((item) => (
@@ -149,9 +208,18 @@ const Facturacion = () => {
 
             <ConfirmInvoice
                 open={confirmInvoiceModal}
-                onOk={submitInvoice}
+                onOk={submitActualInvoice}
                 onCancel={() => setConfirmInvoiceModal(false)}
                 paymentMethodHanlder={setPaymentMethodSelector}
+                list={paymentMethodsList}
+            />
+
+            <NewUserModal
+                open={newClientModal}
+                onCancel={() => setNewClientModal(false)}
+                onOk={submitNewClient}
+                client={true}
+                title='Registrar nuevo cliente'
             />
         </div>
     )

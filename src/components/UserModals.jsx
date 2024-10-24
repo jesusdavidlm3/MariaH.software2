@@ -10,9 +10,6 @@ export const NewUserModal = ({title, open, onCancel, client, cargoControl, onOk 
                     <Form.Item name="userName">
                         <Input placeholder="Nombre"></Input>
                     </Form.Item>
-                    <Form.Item name="userEmail" rules={[{type: "email", message: 'Por favor ingrese un correo valido'}]}>
-                        <Input placeholder="Correo electronico"></Input>
-                    </Form.Item>
                     <Form.Item name="userAddress">
                         <Input placeholder="Direccion"></Input>
                     </Form.Item>
@@ -21,6 +18,9 @@ export const NewUserModal = ({title, open, onCancel, client, cargoControl, onOk 
                     </Form.Item>
                     { !client && 
                     <>
+                        <Form.Item name="userEmail" rules={[{type: "email", message: 'Por favor ingrese un correo valido'}]}>
+                            <Input placeholder="Correo electronico"></Input>
+                        </Form.Item>
                         <Form.Item name="userPassword">
                             <Input.Password placeholder="Contraseña" disabled={client}></Input.Password>
                         </Form.Item>

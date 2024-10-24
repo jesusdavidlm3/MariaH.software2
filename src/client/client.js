@@ -93,9 +93,27 @@ export async function editProduct(data) {
     }
 }
 
+export async function getPaymentMethods(){
+    try{
+        let res = await axios.get(`${url}/api/paymentMethods`)
+        return res
+    }catch(err){
+        return err
+    }
+}
+
 export async function checkCliente(data){
     try{
         let res = await axios.post(`${url}/api/checkCliente`, data)
+        return res
+    }catch(err){
+        return err
+    }
+}
+
+export async function submitInvoice(data){
+    try{
+        let res = await axios.post(`${url}/api/registrarCompra`, data)
         return res
     }catch(err){
         return err
