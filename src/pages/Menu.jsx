@@ -50,8 +50,8 @@ const Menu = () => {
                 <div className="menu">
                     <h1>Bienvenido a administrative group</h1>
                     <h2>Empleados</h2>
-                    <div className="modules" onClick={() => navigate('/Facturacion')}>
-                        <div className="card">
+                    <div className="modules">
+                        <div className="card" onClick={() => navigate('/Facturacion')}>
                             <ShoppingFilled style={{fontSize: '60px'}}/>
                             <h4>Facturacion</h4>
                         </div>
