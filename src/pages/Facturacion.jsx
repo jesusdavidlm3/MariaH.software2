@@ -1,8 +1,8 @@
 import { useState, useEffect, useContext } from "react"
-import { getInventory, checkCliente, submitInvoice, createUser } from "../client/client"
+import { getInventory, checkCliente, submitInvoice, createUser, printInvoice } from "../client/client"
 import { Input, Button, Tooltip, InputNumber, Divider, Space, message } from "antd"
 import { PlusOutlined, CloseOutlined, SearchOutlined } from "@ant-design/icons"
-import { ConfirmInvoice, ConfirmProduct } from '../components/FacturacionModals'
+import { ConfirmInvoice, ConfirmProduct, PrintInvoice } from '../components/FacturacionModals'
 import { NewUserModal } from "../components/UserModals"
 import { appContext } from '../context/appContext'
 
@@ -16,11 +16,13 @@ const Facturacion = () => {
     const [confirmProductModal, setConfirmProductModal] = useState(false)
     const [confirmInvoiceModal, setConfirmInvoiceModal] = useState(false)
     const [newClientModal, setNewClientModal] = useState(false)
+    const [printInvoiceModal, setPrintInvoiceModal] = useState(false)
 
     // datos
     const {userData, paymentMethodsList} = useContext(appContext)
     const [confirmedId, setConfirmedId] = useState()
     const [actualInvoice, setActualInvoice] = useState([])
+    const [facturaEmitida, setFacturaEmitida] = useState('')
 
     // Manejo de UI
     const [fullList, setFullList] = useState([])
@@ -30,7 +32,11 @@ const Facturacion = () => {
     const [totalAmount, setTotalAmount] = useState(0)
     const [messageApi, contextHandler] = message.useMessage()
 
-
+    useEffect(() => {
+        actualInvoice.forEach(item => {
+            setTotalAmount(totalAmount + (item.price * item.quantity))
+        })
+    }, [actualInvoice])
 
     async function getProductList(){
         let res = await getInventory()
@@ -127,6 +133,14 @@ const Facturacion = () => {
 
         let res = await submitInvoice(data)
         if(res.status == 200){
+            setConfirmInvoiceModal(false)
+            setPrintInvoiceModal(true)
+            setFacturaEmitida(res.data.id)
+            setActualInvoice([])
+            setTotalAmount(0)
+            setUserFound(false)
+            setConfirmedId('')
+            set
             messageApi.open({
                 type: "success",
                 content: 'Compra registrada con exito'
@@ -137,6 +151,35 @@ const Facturacion = () => {
                 content: 'Ah ocurrido un error'
             })
         }
+    }
+
+    const submitPrintInvoice = async () => {
+        const data = {
+            id: facturaEmitida
+        }
+        let res = await printInvoice(data)
+        if(res.status == 200){
+            console.log(res.data)
+            const url = window.URL.createObjectURL(new Blob([res.data]))
+            const link = document.createElement('a')
+            link.href=url
+            link.setAttribute('download','ticket.pdf')
+            document.body.appendChild(link)
+            link.click()
+            setPrintInvoiceModal(false)
+        }else{
+            messageApi.open({
+                type: 'error',
+                content: 'ah ocurrido un error'
+            })
+        }
+    }
+
+    const cleanInvoice = () => {
+        setActualInvoice([])
+        setTotalAmount(0)
+        setUserFound(false)
+        setConfirmedId('')
     }
 
     return(
@@ -160,21 +203,21 @@ const Facturacion = () => {
                         </Space.Compact>
                     </div>
                 )}
-                
+                <Divider/>
+
                 <div className="products">
-                    <Divider/>
                     {actualInvoice.map((item) => (
                         <div key={item.id} className="addedProduct">
-                            <h4>{item.id} | {item.name} | {item.quantity} Units. | ${item.price}</h4>
-                            <Tooltip title='Eliminar articulo'>
+                            <h4>Cod. {item.id} | {item.name} | X{item.quantity} | ${item.price}</h4>
+                            {/* <Tooltip title='Eliminar articulo'>
                                 <Button shape="circle" icon={<CloseOutlined />}/>
-                            </Tooltip>
+                            </Tooltip> */}
                         </div>
                     ))}
                 </div>
                 <div className="total">
                     <Divider/>
-                    <h1>Total: {totalAmount}</h1>
+                    <h1>Total: ${totalAmount}</h1>
                 </div>
             </div>
 
@@ -184,7 +227,7 @@ const Facturacion = () => {
                     <Input placeholder="Buscar..."/>
                     {showList.map((item) => (
                         <div key={item.id} className="listItem">
-                            <h3>{item.name} | {item.price}</h3>
+                            <h3>Cod. {item.id} | {item.name} | ${item.price}</h3>
                             <Tooltip title='Agregar a la compra'>
                                 <Button shape="circle" icon={<PlusOutlined/>} onClick={() => {setSelectedProduct(item); setConfirmProductModal(true)}}/>
                             </Tooltip>
@@ -192,7 +235,7 @@ const Facturacion = () => {
                     ))}
                 </div>
                 <div className="finish">
-                    <Button variant="solid" color="danger" onClick={() => setActualInvoice([])}>Limpiar</Button>
+                    <Button variant="solid" color="danger" onClick={cleanInvoice}>Limpiar</Button>
                     <Button type="primary" onClick={() => setConfirmInvoiceModal(true)}>Facturar</Button>
                 </div>
             </div>
@@ -218,6 +261,12 @@ const Facturacion = () => {
                 onOk={submitNewClient}
                 client={true}
                 title='Registrar nuevo cliente'
+            />
+
+            <PrintInvoice 
+                open={printInvoiceModal}
+                onCancel={() => setPrintInvoiceModal(false)}
+                onOk={submitPrintInvoice}
             />
         </div>
     )

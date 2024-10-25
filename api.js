@@ -4,7 +4,7 @@ import bodyParser from 'body-parser';
 import sqlite3 from 'sqlite3';
 import { createServer } from 'http';
 import { v4 as idGenerator } from 'uuid';
-// import { encrypt } from './src/functions/hash'
+import { buildInvoice } from './src/pdfModels/pdfModels.js';
 
 const app = Express();
 const port = 3000;
@@ -115,6 +115,7 @@ app.get('/api/reportes')  //pendiente (generar reportes)
 app.post('/api/registrarCompra', (req, res) => {
     const {date, paymentMethod, employeId, clientId, products} = req.body
     const id = idGenerator()
+
     db.run(`INSERT INTO facturas(id, date, paymentMethod, employeId, clientId) VALUES(?, ?, ?, ?, ?)`,[id, date, paymentMethod, employeId, clientId] ,(err) => {
         if(err){
             console.log(err)
@@ -126,7 +127,7 @@ app.post('/api/registrarCompra', (req, res) => {
                     insertProducts.run([id, item.id, item.quantity])
                 });
                 insertProducts.finalize()
-                res.status(200).send('factura realizada con exito')
+                res.status(200).send({message: 'Factura realizada con exito', id: id})
             }catch(err){
                 console.log(err)
                 res.status(500).send('error del servidor')
@@ -183,7 +184,45 @@ app.delete('/api/eliminarProducto/:id', (req, res) => {
         }
     })
 })
-app.get('/api/emitirFactura')   //pendiente (Generar facturas)
+
+app.post('/api/emitirFactura', (req, res) => {
+    const {id} = req.body
+
+    try{
+        db.get('SELECT * FROM facturas WHERE id = ?', [id], (err, factura) => {
+            db.get('SELECT * FROM paymentMethods WHERE id = ?', [factura.paymentMethod], (err, paymentMethod) => {
+                db.get('SELECT * FROM users WHERE id = ?', [factura.employeId], (err, employe) => {
+                    db.get('SELECT * FROM users WHERE id = ?', [factura.clientId], (err, client) => {
+                        db.all('SELECT productosFacturas.facturaId, products.id, productosFacturas.quantity, products.name, products.price FROM productosFacturas INNER JOIN products ON productosFacturas.productoId = products.id WHERE productosFacturas.facturaId = ?', [factura.id], (err, products) => {
+                            const pdfData = {
+                                idFactura: factura.id,
+                                date: factura.date,
+                                paymentMethod: paymentMethod.name,
+                                employeName: employe.name,
+                                clientName: client.name,
+                                products: products
+                            }
+                            const stream = res.writeHead(200, {
+                                "Content-Type": "aplication/pdf",
+                                "Content-Disposition": "attachment; filename=invoice.pdf"
+                            })
+                            buildInvoice(
+                                (data) => stream.write(data),
+                                () => stream.end(),
+                                pdfData
+                            )
+
+                        })
+                    })
+                })
+            })
+            
+        })
+    }catch(err){
+        console.log(err)
+        res.status(500).send('error del servidor')
+    }
+})
 
 const server = createServer(app);
 

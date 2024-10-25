@@ -36,3 +36,11 @@ export const ConfirmInvoice = ({open, onOk, onCancel, paymentMethodHanlder, list
         </Modal>
     )
 }
+
+export const PrintInvoice = ({open, onOk, onCancel}) => {
+    return(
+        <Modal destroyOnClose onOk={onOk} onCancel={onCancel} open={open} title='Desea imprimir la factura?'>
+            
+        </Modal>
+    )
+}

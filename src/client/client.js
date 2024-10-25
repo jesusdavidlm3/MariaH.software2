@@ -119,3 +119,12 @@ export async function submitInvoice(data){
         return err
     }
 }
+
+export async function printInvoice(data){
+    try{
+        let res = await axios.post(`${url}/api/emitirFactura`, data, {responseType: 'blob'})
+        return res
+    }catch(err){
+        return err
+    }
+}
