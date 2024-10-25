@@ -96,7 +96,8 @@ const Facturacion = () => {
             id: id,
             name: name,
             address: address, 
-            phone: phone
+            phone: phone,
+            type: 2
         }
 
         let res = await createUser(data)

@@ -1,6 +1,5 @@
 import Express from 'express';
 import cors from 'cors';
-import bodyParser from 'body-parser';
 import sqlite3 from 'sqlite3';
 import { createServer } from 'http';
 import { v4 as idGenerator } from 'uuid';

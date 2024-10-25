@@ -1,4 +1,4 @@
-import { Modal, Input, Form, Select } from 'antd'
+import { Modal, Input, Form, Select, InputNumber } from 'antd'
 
 export const NewUserModal = ({title, open, onCancel, client, cargoControl, onOk }) => {
     return(
@@ -83,6 +83,33 @@ export const DeleteModal = ({onOk, onCancel, open}) => {
     return(
         <Modal title='Seguro de que desea eliminar este elemento?' onOk={onOk} onCancel={onCancel} open={open} destroyOnClose>
 
+        </Modal>
+    )
+}
+
+export const NewAdminModal = ({onOk, onCancel, open}) => {
+    return(
+        <Modal title='Registrar un nuevo administrador' onCancel={onCancel} open={open} onOk={onOk} destroyOnClose>
+            <Form >
+                <Form.Item name='adminId' required={true}>
+                    <InputNumber placeholder='Cedula' style={{width: '100%'}}/>
+                </Form.Item>
+                <Form.Item name='adminName' required={true}>
+                    <Input placeholder='Nombre'/>
+                </Form.Item>
+                <Form.Item name='adminAddress' required={true}>
+                    <Input placeholder='Direccion'/>
+                </Form.Item>
+                <Form.Item name='adminPhone' required={true}>
+                    <InputNumber placeholder='Telefono' style={{width: '100%'}}/>
+                </Form.Item>
+                <Form.Item name='adminEmail' required={true}>
+                    <Input placeholder='Correo'/>
+                </Form.Item>
+                <Form.Item name='adminPassword' required={true}>
+                    <Input.Password placeholder='Contraseña'/>
+                </Form.Item>
+            </Form>
         </Modal>
     )
 }
