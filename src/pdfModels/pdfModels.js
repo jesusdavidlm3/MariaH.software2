@@ -7,6 +7,8 @@ export function buildInvoice(dataCallback, endCallback, data){
     doc.on('data', dataCallback)
     doc.on('end', endCallback)
 
+    doc.image('./src/img/1.png', 185, 20, {width: 250, align: 'center', valign: 'center'}).stroke()
+    doc.fontSize(60).text(' ')
     doc.fontSize(50).text('Factura', {align: 'center'})
     doc.fontSize(15).text(`Factura Nro: ${data.idFactura}`)
     doc.text(`Cliente: ${data.clientName}`)
@@ -39,6 +41,8 @@ export function buildInventoryReport(dataCallback, endCallback, data){
     doc.on("data", dataCallback)
     doc.on("end", endCallback)
 
+    doc.image('./src/img/1.png', 185, 20, {width: 250, align: 'center', valign: 'center'}).stroke()
+    doc.fontSize(60).text(' ')
     doc.fontSize(50).text('Reporte de inventario', {align: 'center'})
     doc.fontSize(10).text(`Fecha: ${new Date().getDate()}/${new Date().getMonth()+1}/${new Date().getFullYear()}`)
 
@@ -57,3 +61,25 @@ export function buildInventoryReport(dataCallback, endCallback, data){
 
     doc.end()
 }   
+
+export const buildGeneralReport = (dataCallback, endCallback, info) => {
+    const doc = PDFDocument()
+
+    doc.on('data', dataCallback)
+    doc.on('end', endCallback)
+
+    doc.image('./src/img/1.png', 185, 20, {width: 250, align: 'center', valign: 'center'}).stroke()
+    doc.fontSize(60).text(' ')
+    doc.fontSize(50).text('Reporte general de ventas')
+    doc.fontSize(10).text(`Fecha: ${new Date().getDate()}/${new Date().getMonth()+1}/${new Date().getFullYear()}`)
+    doc.text(' ')
+    
+    doc.fontSize(20).text('-------------------------------------------------------------', {align: 'center'})
+    doc.fontSize(15)
+
+    doc.text('Total de ventas realizadas: ')
+    doc.text('Total de ganancia: ')
+    doc.text('Productos vendidos: ')
+
+    doc.end()
+}

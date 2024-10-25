@@ -235,6 +235,10 @@ app.post('/api/emitirFactura', (req, res) => {
     }
 })
 
+// app.get('/api/emitirReporteGeneral', (req, res) => {
+//     db.get('')
+// })
+
 const server = createServer(app);
 
 server.listen(port, () => {

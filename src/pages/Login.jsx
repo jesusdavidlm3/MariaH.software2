@@ -5,6 +5,7 @@ import { useContext, useState } from "react"
 import { appContext } from "../context/appContext"
 import { useNavigate } from "react-router-dom"
 import { NewAdminModal } from "../components/UserModals"
+import logo from '../img/2.png'
 
 const Login = () => {
 
@@ -84,10 +85,9 @@ const Login = () => {
         <>
             {contextHandler}
             <Form className="loginPage">
-                <h1>Bienvenido a Administrative Group</h1>
-                <h2>Iniciar sesion</h2>
+                <img src={logo} style={{width: '350px', position: 'relative', top: '40px', left: '5px'}}/>
+                <h2 style={{margin: '5px'}}>Iniciar sesion</h2>
                 <Form.Item
-                    label='Email'
                     name='Email'
                     rules={[
                         {
@@ -97,11 +97,10 @@ const Login = () => {
                         },
                     ]}
                 >
-                    <Input/>
+                    <Input placeholder="Correo" style={{width: '300px'}}/>
                 </Form.Item>
 
                 <Form.Item
-                    label='Password'
                     name='Password'
                     rules={[
                         {
@@ -110,7 +109,7 @@ const Login = () => {
                         },
                     ]}
                 >
-                    <Input.Password/>
+                    <Input.Password placeholder="Contraseña" style={{width: '300px'}}/>
                 </Form.Item>
 
                 { errorDisplay && <h2 style={{color: "tomato"}}>{error}</h2> }
