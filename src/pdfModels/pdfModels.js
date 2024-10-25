@@ -32,3 +32,28 @@ export function buildInvoice(dataCallback, endCallback, data){
 
     doc.end()
 }
+
+export function buildInventoryReport(dataCallback, endCallback, data){
+    const doc = new PDFDocument()
+
+    doc.on("data", dataCallback)
+    doc.on("end", endCallback)
+
+    doc.fontSize(50).text('Reporte de inventario', {align: 'center'})
+    doc.fontSize(10).text(`Fecha: ${new Date().getDate()}/${new Date().getMonth()+1}/${new Date().getFullYear()}`)
+
+    doc.text(' ')
+    doc.fontSize(20).text('-------------------------------------------------------------', {align: 'center'})
+    doc.fontSize(15)
+
+    data.forEach(item => {
+        doc.text(`Cod. ${item.id}`)
+        doc.text(`Nombre: ${item.name}`)
+        doc.text(`Cantidad: ${item.quantity} unidades`)
+        doc.text(`Precio: $${item.price}`)
+        doc.fontSize(20).text('-------------------------------------------------------------', {align: 'center'})
+        doc.fontSize(15).text(' ')
+    })
+
+    doc.end()
+}   

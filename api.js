@@ -3,7 +3,7 @@ import cors from 'cors';
 import sqlite3 from 'sqlite3';
 import { createServer } from 'http';
 import { v4 as idGenerator } from 'uuid';
-import { buildInvoice } from './src/pdfModels/pdfModels.js';
+import { buildInvoice, buildInventoryReport } from './src/pdfModels/pdfModels.js';
 
 const app = Express();
 const port = 3000;
@@ -107,8 +107,20 @@ app.get('/api/getClients', (req, res) => {
     })
 })
 
+app.get('/api/getInventoryReport', (req, res) => {
+    db.all('SELECT * FROM products', (err, list) => {
+        const stream = res.writeHead(200, {
+            "Content-Type": "aplication/pdf",
+            "Content-Disposition": "attachment; filename=reporte.pdf"
+        })
 
-app.get('/api/reportes')  //pendiente (generar reportes)
+        buildInventoryReport(
+            (data) => stream.write(data),
+            () => stream.end(),
+            list
+        )
+    })
+})
 
 //Casos de uso del empleado
 app.post('/api/registrarCompra', (req, res) => {

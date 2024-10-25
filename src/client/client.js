@@ -128,3 +128,12 @@ export async function printInvoice(data){
         return err
     }
 }
+
+export async function printInventoryReport(){
+    try{
+        let res = await axios.get(`${url}/api/getInventoryReport`, {responseType: 'blob'})
+        return res
+    }catch(err){
+        return err
+    }
+}
