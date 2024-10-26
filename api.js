@@ -235,9 +235,17 @@ app.post('/api/emitirFactura', (req, res) => {
     }
 })
 
-// app.get('/api/emitirReporteGeneral', (req, res) => {
-//     db.get('')
-// })
+app.get('/api/emitirReporteGeneral', (req, res) => {
+    try{
+        db.all('SELECT * FROM facturas', (err, facturas) => {
+            res.status(200).send(facturas)
+        })
+    }catch(err){
+        console.log(err)
+        res.status(500).send('error del servidor')
+    }
+    
+})
 
 const server = createServer(app);
 

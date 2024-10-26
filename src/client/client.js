@@ -137,3 +137,12 @@ export async function printInventoryReport(){
         return err
     }
 }
+
+export async function printGeneralReport() {
+    try{
+        let res = await axios.get(`${url}/api/emitirReporteGeneral`)
+        return res
+    }catch(err){
+        return err
+    }
+}

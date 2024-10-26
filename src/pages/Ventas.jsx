@@ -1,5 +1,5 @@
 import { AuditOutlined, CopyFilled, ProductFilled } from "@ant-design/icons"
-import { printInventoryReport, printInvoice } from "../client/client"
+import { printInventoryReport, printInvoice, printGeneralReport } from "../client/client"
 import { message } from "antd"
 import { PrintInvoiceModal } from '../components/VentasModals'
 import { useState } from "react"
@@ -58,6 +58,18 @@ const Ventas = () => {
         }
     }
 
+    const generalReport = async () => {
+        let res = await printGeneralReport()
+        if(res.status == 200){
+            console.log(res.data)
+        }else{
+            messageApi.open({
+                type: 'error',
+                content: 'ah ocurrido un error'
+            })
+        }
+    }
+
     return(
         <div className="menu">
             {contextHolder}
@@ -67,7 +79,7 @@ const Ventas = () => {
                     <AuditOutlined style={{fontSize: '60px'}} />
                     <h4>Factura</h4>
                 </div>
-                <div className="card" onClick={() => navigate('/Ventas')}>
+                <div className="card" onClick={generalReport}>
                     <CopyFilled style={{fontSize: '60px'}}/>
                     <h4>Ventas</h4>
                 </div>
