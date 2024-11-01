@@ -5,6 +5,7 @@ import { PlusOutlined, CloseOutlined, SearchOutlined } from "@ant-design/icons"
 import { ConfirmInvoice, ConfirmProduct, PrintInvoice } from '../components/FacturacionModals'
 import { NewUserModal } from "../components/UserModals"
 import { appContext } from '../context/appContext'
+import { dollarPrice } from "../context/constants"
 
 const Facturacion = () => {
 
@@ -163,6 +164,21 @@ const Facturacion = () => {
         }
     }
 
+    const handleSearch = () => {
+        const searchInput = document.getElementById('searchInput').value
+        const results = []
+        if (searchInput == ''){
+            setShowList(fullList)
+        }else{
+            fullList.forEach(item => {
+                if(item.name.toLowerCase().includes(searchInput.toLowerCase())){
+                    results.push(item)
+                }
+            })
+            setShowList(results)
+        }
+    }
+
     const submitPrintInvoice = async () => {
         const data = {
             id: facturaEmitida
@@ -230,13 +246,15 @@ const Facturacion = () => {
                     <h3>Subtotal: ${subTotal}</h3>
                     <h3>IVA: ${iva}</h3>
                     <h1>Total: ${totalAmount}</h1>
+                    <h1>Total: Bs. {totalAmount * dollarPrice}</h1>
+                    
                 </div>
             </div>
 
 
             <div className="second">
                 <div className="list">
-                    <Input placeholder="Buscar..."/>
+                    <Input placeholder="Buscar..." onChange={handleSearch} id='searchInput'/>
                     {showList.map((item) => (
                         <div key={item.id} className="listItem">
                             <h3>Cod. {item.id} | {item.name} | ${item.price}</h3>

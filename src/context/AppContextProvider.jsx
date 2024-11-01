@@ -14,7 +14,7 @@ const AppContextProvider = ({children}) => {
             userData,
             setUserData,
             paymentMethodsList,
-            setPaymentMethodsList
+            setPaymentMethodsList,
         }}>
             {children}
         </appContext.Provider>

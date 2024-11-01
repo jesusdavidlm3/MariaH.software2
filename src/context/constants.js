@@ -1,0 +1,1 @@
+export const dollarPrice = 42.71

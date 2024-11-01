@@ -1,4 +1,5 @@
 import PDFDocument from 'pdfkit'
+import { dollarPrice } from '../context/constants'
 
 export function buildInvoice(dataCallback, endCallback, data){
     const doc = new PDFDocument()
@@ -32,6 +33,7 @@ export function buildInvoice(dataCallback, endCallback, data){
     doc.fontSize(20).text(`Subtotal: $${total}`, {align: 'right'})
     doc.fontSize(20).text(`IVA (16%): $${total * 0.16}`, {align: 'right'})
     doc.fontSize(30).text(`Total: $${total + (total * 0.16)}`, {align: 'right'})
+    doc.fontSize(30).text(`Total: Bs. ${(total + (total * 0.16) * dollarPrice)}`, {align: 'right'})
     doc.fontSize(15).text(`Metodo de pago: ${data.paymentMethod}`, {align: 'center'})
 
     doc.end()
