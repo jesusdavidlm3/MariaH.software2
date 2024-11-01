@@ -30,12 +30,21 @@ const Facturacion = () => {
     const [selectedProduct, setSelectedProduct] = useState('')
     const [userFound, setUserFound] = useState(false)
     const [totalAmount, setTotalAmount] = useState(0)
+    const [iva, setIva] = useState(0)
+    const [subTotal, setSubTotal] = useState(0)
     const [messageApi, contextHandler] = message.useMessage()
 
     useEffect(() => {
+        let newSubTotal
         actualInvoice.forEach(item => {
-            setTotalAmount(totalAmount + (item.price * item.quantity))
+            setSubTotal(subTotal + (item.price * item.quantity))
+            newSubTotal = subTotal + (item.price * item.quantity)
         })
+        const newIva = newSubTotal * 0.16
+        const newTotalAmount = newSubTotal + newIva
+        setIva(newIva)
+        setTotalAmount(newTotalAmount)
+
     }, [actualInvoice])
 
     async function getProductList(){
@@ -218,6 +227,8 @@ const Facturacion = () => {
                 </div>
                 <div className="total">
                     <Divider/>
+                    <h3>Subtotal: ${subTotal}</h3>
+                    <h3>IVA: ${iva}</h3>
                     <h1>Total: ${totalAmount}</h1>
                 </div>
             </div>

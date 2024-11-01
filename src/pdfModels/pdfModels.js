@@ -29,7 +29,9 @@ export function buildInvoice(dataCallback, endCallback, data){
     });
 
     doc.fontSize(20).text('-------------------------------------------------------------', {align: 'center'})
-    doc.fontSize(30).text(`Total: $${total}`, {align: 'right'})
+    doc.fontSize(20).text(`Subtotal: $${total}`, {align: 'right'})
+    doc.fontSize(20).text(`IVA (16%): $${total * 0.16}`, {align: 'right'})
+    doc.fontSize(30).text(`Total: $${total + (total * 0.16)}`, {align: 'right'})
     doc.fontSize(15).text(`Metodo de pago: ${data.paymentMethod}`, {align: 'center'})
 
     doc.end()
