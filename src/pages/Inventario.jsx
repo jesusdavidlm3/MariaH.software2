@@ -107,11 +107,26 @@ const Inventario = () => {
         }
     }
 
+    const handleSearch = () => {
+        const searchInput = document.getElementById('searchInput').value
+        const results = []
+        if (searchInput == ''){
+            setShowList(fullList)
+        }else{
+            fullList.forEach(item => {
+                if(item.name.toLowerCase().includes(searchInput.toLowerCase())){
+                    results.push(item)
+                }
+            })
+            setShowList(results)
+        }
+    }
+
     return(
         <div className="Employes">
             {contextHolder}
             <div className="searchBar">
-                <Input.Search placeholder="Buscar..."></Input.Search>
+                <Input.Search placeholder="Buscar..." id="searchInput" onChange={handleSearch}></Input.Search>
                 <Button type="primary" onClick={() => setNewProduct(true)}>Agregar producto</Button>
             </div>
             <div className="list">

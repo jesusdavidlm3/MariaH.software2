@@ -33,14 +33,12 @@ const Clients = () => {
     const submitNewClient = async () => {
         const userId = document.getElementById('userId').value
         const userName = document.getElementById('userName').value
-        const userEmail = document.getElementById('userEmail').value
         const userPhone = document.getElementById('userPhone').value
         const userAddress = document.getElementById('userAddress').value
 
         const data = {
             id: userId,
             name: userName,
-            email: userEmail,
             phone: userPhone, 
             type: 2,
             address: userAddress,
@@ -111,11 +109,26 @@ const Clients = () => {
         }
     }
 
+    const handleSearch = () => {
+        const searchInput = document.getElementById('searchInput').value
+        const results = []
+        if (searchInput == ''){
+            setShowList(fullList)
+        }else{
+            fullList.forEach(item => {
+                if(item.name.toLowerCase().includes(searchInput.toLowerCase())){
+                    results.push(item)
+                }
+            })
+            setShowList(results)
+        }
+    }
+
     return(
         <div className="Employes">
             {contextHolder}
             <div className="searchBar">
-                <Input.Search></Input.Search>
+                <Input.Search onChange={handleSearch} placeholder="Buscar..." id="searchInput"></Input.Search>
                 <Button type="primary" onClick={() => setNewClient(true)}>Agregar cliente</Button>
             </div>
             <div className="list">

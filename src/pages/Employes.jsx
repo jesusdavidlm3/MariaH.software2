@@ -114,11 +114,26 @@ const Employes = () => {
         }
     }
 
+    const handleSearch = () => {
+        const searchInput = document.getElementById('searchInput').value
+        const results = []
+        if (searchInput == ''){
+            setShowList(fullList)
+        }else{
+            fullList.forEach(item => {
+                if(item.name.toLowerCase().includes(searchInput.toLowerCase())){
+                    results.push(item)
+                }
+            })
+            setShowList(results)
+        }
+    }
+
     return(
         <div className="Employes">
             {contextHolder}
             <div className="searchBar">
-                <Input.Search></Input.Search>
+                <Input.Search placeholder="Buscar..." onChange={handleSearch} id="searchInput"></Input.Search>
                 <Button type="primary" onClick={() => setNewEmploye(true)}>Agregar empleado</Button>
             </div>
             <div className="list">
